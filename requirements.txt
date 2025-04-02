@@ -1,4 +1,4 @@
 streamlit
 openai>=1.2.0
 pydub
-requests
+gtts
