@@ -64,7 +64,15 @@ if audio_file is not None:
             response = requests.post(url, headers=headers, json=data)
             return response.content
 
-        audio_bytes = elevenlabs_tts(valentina_text)
+       try:
+    audio_bytes = elevenlabs_tts(valentina_text)
+    
+    if audio_bytes and len(audio_bytes) > 1000:  # asegura que no esté vacío
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as tmpfile:
+            tmpfile.write(audio_bytes)
+            st.audio(tmpfile.name, format="audio/mp3")
+    else:
+        st.error("⚠️ No se pudo reproducir el audio. El archivo está vacío o corrupto.")
+except Exception as e:
+    st.error(f"Error al generar audio con ElevenLabs: {e}")
 
-# Streamlit necesita el audio en formato reproducible (con encabezado correcto)
-st.audio(audio_bytes, format="audio/mpeg")
