@@ -8,7 +8,8 @@ import speech_recognition as sr
 from pydub import AudioSegment
 
 # Config
-client = openai.OpenAI()
+import openai
+client = openai.OpenAI(api_key=st.secrets["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"])
 ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 
 # Imagen del avatar
