@@ -65,4 +65,6 @@ if audio_file is not None:
             return response.content
 
         audio_bytes = elevenlabs_tts(valentina_text)
-        st.audio(audio_bytes, format="audio/mp3")
+
+# Streamlit necesita el audio en formato reproducible (con encabezado correcto)
+st.audio(audio_bytes, format="audio/mpeg")
