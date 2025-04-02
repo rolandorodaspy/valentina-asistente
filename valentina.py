@@ -4,7 +4,7 @@ import requests
 import tempfile
 from pydub import AudioSegment
 
-# Cargar claves desde los secretos
+# Inicializar cliente OpenAI con API Key desde secretos
 client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 
@@ -17,7 +17,7 @@ st.write("Subí un audio en formato WAV o MP3 para que Valentina te responda con
 audio_file = st.file_uploader("Subí un audio (WAV/MP3)", type=["wav", "mp3"])
 
 if audio_file is not None:
-    # Convertir MP3 a WAV si es necesario
+    # Convertir MP3 a WAV si hace falta
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_audio:
         if audio_file.type == "audio/mp3":
             audio = AudioSegment.from_mp3(audio_file)
@@ -36,11 +36,11 @@ if audio_file is not None:
         user_text = transcript.text
         st.markdown(f"**Transcripción:** {user_text}")
 
-        # Respuesta con ChatGPT
+        # Respuesta de Valentina con GPT
         chat_response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Sos Valentina, la asistente cálida y cercana de Rolo."},
+                {"role": "system", "content": "Sos Valentina, una asistente cálida, amable y cercana. Respondés con empatía y claridad."},
                 {"role": "user", "content": user_text}
             ]
         )
@@ -64,15 +64,15 @@ if audio_file is not None:
             response = requests.post(url, headers=headers, json=data)
             return response.content
 
-       try:
-    audio_bytes = elevenlabs_tts(valentina_text)
-    
-    if audio_bytes and len(audio_bytes) > 1000:  # asegura que no esté vacío
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as tmpfile:
-            tmpfile.write(audio_bytes)
-            st.audio(tmpfile.name, format="audio/mp3")
-    else:
-        st.error("⚠️ No se pudo reproducir el audio. El archivo está vacío o corrupto.")
-except Exception as e:
-    st.error(f"Error al generar audio con ElevenLabs: {e}")
+        # Reproducir audio si es válido
+        try:
+            audio_bytes = elevenlabs_tts(valentina_text)
 
+            if audio_bytes and len(audio_bytes) > 1000:
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as tmpfile:
+                    tmpfile.write(audio_bytes)
+                    st.audio(tmpfile.name, format="audio/mp3")
+            else:
+                st.error("⚠️ No se pudo reproducir el audio. El archivo está vacío o corrupto.")
+        except Exception as e:
+            st.error(f"Error al generar audio con ElevenLabs: {e}")
