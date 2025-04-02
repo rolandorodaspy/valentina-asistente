@@ -8,7 +8,7 @@ import speech_recognition as sr
 from pydub import AudioSegment
 
 # Config
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+client = openai.OpenAI()
 ELEVENLABS_API_KEY = st.secrets["ELEVENLABS_API_KEY"]
 
 # Imagen del avatar
@@ -32,7 +32,11 @@ if audio_file is not None:
 
         # Transcripción con Whisper
         with open(tmp_audio.name, "rb") as audio_input:
-            transcript = openai.Audio.transcribe("whisper-1", audio_input)
+          transcript = client.audio.transcriptions.create(
+    model="whisper-1",
+    file=audio_input
+)
+
 
         user_text = transcript["text"]
         st.markdown(f"**Transcripción:** {user_text}")
