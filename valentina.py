@@ -48,7 +48,7 @@ if audio_file is not None:
         st.markdown(f"**Valentina dice:** {valentina_text}")
 
         # Texto a voz con ElevenLabs
-        def elevenlabs_tts(text, voice="Rachel"):
+        def elevenlabs_tts(text, voice="21m00Tcm4TlvDq8ikWAM"):
             url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice}"
             headers = {
                 "xi-api-key": ELEVENLABS_API_KEY,
